@@ -48,6 +48,10 @@ public class World {
     }
 
     private void checkShootsToShip() {
+        System.out.println(ship.state);
+        System.out.println(ship.frame);
+        System.out.println(ship.frame.getRegionHeight());
+
         Rectangle shipRectangle = new Rectangle(ship.position.x, ship.position.y, ship.frame.getRegionWidth(), ship.frame.getRegionHeight());
 
         for(AlienShoot shoot: alienArmy.shoots){

@@ -33,6 +33,7 @@ public class Alien {
             frame = assets.aliendie.getKeyFrame(stateTime, false);
         }
 
+
         if(state == State.DYING){
             if(assets.aliendie.isAnimationFinished(stateTime)){
                 state = State.DEAD;
@@ -40,9 +41,6 @@ public class Alien {
         }
     }
 
-    void shoot(){
-
-    }
 
     public void kill() {
         state = State.DYING;

@@ -10,7 +10,7 @@ import java.util.Random;
 
 public class AlienArmy {
 
-    int x, y, maxX;
+    int x, y, maxX, maxY;
 
     float speed = 8f;
 
@@ -25,6 +25,7 @@ public class AlienArmy {
         this.x = 0;
         this.y = WORLD_HEIGHT-30;
         this.maxX = 60;
+        this.maxY = 10;
 
         aliens = new Array<Alien>();
         shoots = new Array<AlienShoot>();
@@ -80,12 +81,22 @@ public class AlienArmy {
         if (moveTimer.check()){
             x += speed;
 
-            if(x > maxX){
+            if(x > maxX ){
                 x = maxX;
                 speed *= -1;
-            } else if(x < 0){
+
+                for (Alien alien : aliens) {
+                    alien.position.y -= 20f;
+                }
+
+            } else if(x < 0 ){
                 x = 0;
                 speed *= -1;
+
+                for (Alien alien : aliens) {
+                    alien.position.y -= 20f;
+                }
+
             }
 
             for (Alien alien : aliens) {

@@ -9,7 +9,7 @@ import com.mygdx.game.Controls;
 public class Ship {
 
     enum State {
-        IDLE, LEFT, RIGHT, SHOOT;
+        IDLE, LEFT, RIGHT, SHOOT, DYING, DEAD, LIVE;
     }
 
     Vector2 position;
@@ -17,6 +17,7 @@ public class Ship {
     State state;
     float stateTime;
     float speed = 5;
+    int lives = 3;
 
     TextureRegion frame;
 
@@ -36,6 +37,9 @@ public class Ship {
             case IDLE:
                 frame = assets.naveidle.getKeyFrame(stateTime, true);
                 break;
+            case DYING:
+                frame = assets.navedamaged.getKeyFrame(stateTime, true);
+                break;
             case LEFT:
                 frame = assets.naveleft.getKeyFrame(stateTime, true);
                 break;
@@ -49,6 +53,7 @@ public class Ship {
                 frame = assets.naveidle.getKeyFrame(stateTime, true);
                 break;
         }
+
     }
 
     void render(SpriteBatch batch){
@@ -60,22 +65,31 @@ public class Ship {
     public void update(float delta, Assets assets) {
         stateTime += delta;
 
-        if(Controls.isLeftPressed()){
+        if (Controls.isLeftPressed()) {
             moveLeft();
-        } else if(Controls.isRightPressed()){
+        } else if (Controls.isRightPressed()) {
             moveRight();
         } else {
             idle();
         }
 
-        if(Controls.isShootPressed()) {
+        if (Controls.isShootPressed()) {
             shoot();
             assets.shootSound.play();
         }
 
-        setFrame(assets);
+        // probando para matar a la nave
+        if (state == State.DYING) {
+            if (assets.navedamaged.isAnimationFinished(stateTime)) {
+                state = State.DEAD;
+            }
 
-        weapon.update(delta, assets);
+            setFrame(assets);
+
+            weapon.update(delta, assets);
+        }
+
+        System.out.println(frame);
     }
 
     void idle(){
@@ -97,7 +111,15 @@ public class Ship {
         weapon.shoot(position.x +16);
     }
 
-    public void damage() {
+    void damage() {
+        lives -= 1;
+        if(lives == 0) {
+            System.out.println("Muerto");
+        }
+
+        state = State.DYING;
+        stateTime = 0;
 
     }
+
 }
