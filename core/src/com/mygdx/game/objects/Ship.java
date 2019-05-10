@@ -62,6 +62,7 @@ public class Ship {
                 heart = assets.heartcontainer.getKeyFrame(1, true);
                 break;
             case 2:
+
                 heart = assets.heartcontainer.getKeyFrame(2, true);
                 break;
             case 1:
