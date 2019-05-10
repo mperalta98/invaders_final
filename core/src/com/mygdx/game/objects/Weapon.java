@@ -32,8 +32,11 @@ public class Weapon {
     }
 
     public void shoot(float position){
+
         if(shootTimer.check()){
             shoots.add(new Shoot(position));
+
+            System.out.println(shoots.size);
         }
     }
 

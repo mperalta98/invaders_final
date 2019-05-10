@@ -9,10 +9,12 @@ public class World {
     Space space;
     Ship ship;
     AlienArmy alienArmy;
+    public  boolean gameOver = false;
 
     int WORLD_WIDTH, WORLD_HEIGHT;
 
     public World(int WORLD_WIDTH, int WORLD_HEIGHT){
+
         this.WORLD_WIDTH = WORLD_WIDTH;
         this.WORLD_HEIGHT = WORLD_HEIGHT;
 
@@ -33,6 +35,8 @@ public class World {
     }
 
     void update(float delta, Assets assets){
+        checkGameOver();
+
         space.update(delta, assets);
         ship.update(delta, assets);
         alienArmy.update(delta, assets);
@@ -40,7 +44,14 @@ public class World {
         checkCollisions(assets);
     }
 
+    private void checkGameOver() {
+        if(ship.state == Ship.State.DEAD){
+            gameOver = true;
+        }
+    }
+
     private void checkCollisions(Assets assets) {
+
         checkNaveInWorld();
         checkShootsInWorld();
         checkShootsToAlien(assets);
@@ -48,9 +59,6 @@ public class World {
     }
 
     private void checkShootsToShip() {
-        System.out.println(ship.state);
-        System.out.println(ship.frame);
-        System.out.println(ship.frame.getRegionHeight());
 
         Rectangle shipRectangle = new Rectangle(ship.position.x, ship.position.y, ship.frame.getRegionWidth(), ship.frame.getRegionHeight());
 
@@ -65,6 +73,7 @@ public class World {
     }
 
     private void checkShootsToAlien(Assets assets) {
+
         for(Shoot shoot: ship.weapon.shoots){
             Rectangle shootRectangle = new Rectangle(shoot.position.x, shoot.position.y, shoot.frame.getRegionWidth(), shoot.frame.getRegionHeight());
             for(Alien alien: alienArmy.aliens){
@@ -82,6 +91,7 @@ public class World {
     }
 
     private void checkShootsInWorld() {
+
         for(Shoot shoot: ship.weapon.shoots){
             if(shoot.position.y > WORLD_HEIGHT){
                 shoot.remove();
@@ -96,6 +106,7 @@ public class World {
     }
 
     private void checkNaveInWorld() {
+
         if(ship.position.x > WORLD_WIDTH-32){
             ship.position.x = WORLD_WIDTH-32;
         } else if(ship.position.x < 0){

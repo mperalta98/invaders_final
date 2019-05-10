@@ -9,7 +9,7 @@ import com.mygdx.game.Controls;
 public class Ship {
 
     enum State {
-        IDLE, LEFT, RIGHT, SHOOT, DYING, DEAD, LIVE;
+        IDLE, LEFT, RIGHT, SHOOT, DYING, DEAD
     }
 
     Vector2 position;
@@ -17,10 +17,9 @@ public class Ship {
     State state;
     float stateTime;
     float speed = 5;
-    int lives = 3;
+    int lives = 4;
 
-    TextureRegion frame;
-
+    TextureRegion frame, heart, over;
     Weapon weapon;
 
     Ship(int initialPosition){
@@ -33,6 +32,7 @@ public class Ship {
 
 
     void setFrame(Assets assets){
+
         switch (state){
             case IDLE:
                 frame = assets.naveidle.getKeyFrame(stateTime, true);
@@ -54,72 +54,91 @@ public class Ship {
                 break;
         }
 
+        switch (lives){
+            case 4:
+                heart = assets.heartcontainer.getKeyFrame(0, true);
+                break;
+            case 3:
+                heart = assets.heartcontainer.getKeyFrame(1, true);
+                break;
+            case 2:
+                heart = assets.heartcontainer.getKeyFrame(2, true);
+                break;
+            case 1:
+                heart = assets.heartcontainer.getKeyFrame(3, true);
+                break;
+            case 0:
+                heart = assets.heartcontainer.getKeyFrame(4, true);
+                break;
+        }
+
     }
 
     void render(SpriteBatch batch){
         batch.draw(frame, position.x, position.y);
 
         weapon.render(batch);
+
+        batch.draw(heart, 25, 220);
     }
 
     public void update(float delta, Assets assets) {
         stateTime += delta;
 
-        if (Controls.isLeftPressed()) {
-            moveLeft();
-        } else if (Controls.isRightPressed()) {
-            moveRight();
-        } else {
-            idle();
+        System.out.println(state);
+        switch (state){
+            case IDLE:
+            case RIGHT:
+            case LEFT:
+            case SHOOT:
+                if (Controls.isLeftPressed()) {
+                    setState(State.LEFT);
+                    moveLeft();
+                } else if (Controls.isRightPressed()) {
+                    setState(State.RIGHT);
+                    moveRight();
+                } else {
+                    setState(State.IDLE);
+                }
+
+                if (Controls.isShootPressed()) {
+                    setState(State.SHOOT);
+                    shoot();
+                    assets.shootSound.play();
+                }
+                if (lives == 0) {
+                    setState(State.DYING);
+                }
+                break;
+            case DYING:
+                if(assets.navedamaged.isAnimationFinished(stateTime)){
+                    setState(State.DEAD);
+                }
+                break;
         }
-
-        if (Controls.isShootPressed()) {
-            shoot();
-            assets.shootSound.play();
-        }
-
-        // probando para matar a la nave
-        if (state == State.DYING) {
-            if (assets.navedamaged.isAnimationFinished(stateTime)) {
-                state = State.DEAD;
-            }
-
-            setFrame(assets);
-
-            weapon.update(delta, assets);
-        }
-
-        System.out.println(frame);
+        setFrame(assets);
+        weapon.update(delta, assets);
     }
 
-    void idle(){
-        state = State.IDLE;
+    private void setState(State state) {
+        this.state = state;
+        stateTime = 0;
     }
+
 
     void moveLeft(){
         position.x -= speed;
-        state = State.LEFT;
     }
 
     void moveRight(){
         position.x += speed;
-        state = State.RIGHT;
     }
 
     void shoot(){
-        state = State.SHOOT;
         weapon.shoot(position.x +16);
     }
 
     void damage() {
         lives -= 1;
-        if(lives == 0) {
-            System.out.println("Muerto");
-        }
-
-        state = State.DYING;
-        stateTime = 0;
-
     }
-
 }
