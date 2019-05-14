@@ -16,6 +16,7 @@ public class Ship {
 
     State state;
     float stateTime;
+    int score = 0;
     float speed = 5;
     int lives = 4;
 

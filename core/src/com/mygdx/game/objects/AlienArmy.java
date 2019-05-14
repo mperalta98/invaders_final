@@ -5,20 +5,25 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Assets;
 import com.mygdx.game.Timer;
+import com.mygdx.game.screen.GameOverScreen;
 
 import java.util.Random;
 
 public class AlienArmy {
 
     int x, y, maxX, maxY;
-
+    int levelArmy = 1;
+    private int WORLD_HEIGHT;
     float speed = 8f;
+    float moveTimerLimit = 0.8f;
+    boolean gameOver = false;
 
     Array<Alien> aliens;
     Array<AlienShoot> shoots;
 
     Timer moveTimer, shootTimer;
     Random random = new Random();
+
 
     AlienArmy(int WORLD_WIDTH, int WORLD_HEIGHT){
 
@@ -29,6 +34,8 @@ public class AlienArmy {
 
         aliens = new Array<Alien>();
         shoots = new Array<AlienShoot>();
+
+        this.WORLD_HEIGHT = WORLD_HEIGHT;
 
         moveTimer = new Timer(0.8f);
         shootTimer = new Timer(random.nextFloat()%5+1);
@@ -63,8 +70,8 @@ public class AlienArmy {
         }
 
 
-        removeDeadAliens();
-        removeShoots();
+       removeDeadAliens();
+
     }
 
 
@@ -117,31 +124,54 @@ public class AlienArmy {
 
             shootTimer.set(random.nextFloat()%5+1);
         }
+        if (aliens.size <= 0 && gameOver == false) {
+            nextlvl();
+        }
     }
 
-    private void removeDeadAliens() {
-        Array<Alien> aliensToRemove = new Array<Alien>();
-        for(Alien alien: aliens){
-            if(alien.state == Alien.State.DEAD){
-                aliensToRemove.add(alien);
+    void nextlvl() {
+        aliens.clear();
+        positionAliens();
+        levelArmy++;
+        x = 0;
+        this.y = WORLD_HEIGHT - 30;
+        if (levelArmy > 4) {
+            finish();
+
+        } else {
+            moveTimerLimit *= 0.7f;
+            moveTimer = new Timer(moveTimerLimit);
+        }
+    }
+    private void finish() {
+        aliens.clear();
+        gameOver = true;
+
+    }
+
+
+        void removeDeadAliens () {
+            Array<Alien> aliensToRemove = new Array<Alien>();
+            for (Alien alien : aliens) {
+                if (alien.state == Alien.State.DEAD) {
+                    aliensToRemove.add(alien);
+                }
+            }
+
+            for (Alien alien : aliensToRemove) {
+                aliens.removeValue(alien, true);
             }
         }
+        public void removeShoots () {
+            Array<AlienShoot> shootsToRemove = new Array<AlienShoot>();
+            for (AlienShoot shoot : shoots) {
+                if (shoot.state == AlienShoot.State.TO_REMOVE) {
+                    shootsToRemove.add(shoot);
+                }
+            }
 
-        for (Alien alien: aliensToRemove){
-            aliens.removeValue(alien, true);
-        }
-    }
-    public void removeShoots(){
-        Array<AlienShoot> shootsToRemove = new Array<AlienShoot>();
-        for(AlienShoot shoot:shoots){
-            if(shoot.state == AlienShoot.State.TO_REMOVE){
-                shootsToRemove.add(shoot);
+            for (AlienShoot shoot : shootsToRemove) {
+                shoots.removeValue(shoot, true);
             }
         }
-
-        for (AlienShoot shoot: shootsToRemove){
-            shoots.removeValue(shoot, true);
-        }
-    }
-
 }

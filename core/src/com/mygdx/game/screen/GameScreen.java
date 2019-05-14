@@ -43,6 +43,9 @@ public class GameScreen extends SpaceInvadersScreen {
         if(world.gameOver){
             game.setScreen(new GameOverScreen(game));
         }
+        if(world.win){
+            game.setScreen(new GameWinScreen(game));
+        }
     }
 
     @Override

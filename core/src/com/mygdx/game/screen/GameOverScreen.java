@@ -24,9 +24,6 @@ public class GameOverScreen extends SpaceInvadersScreen {
     public void render(float delta) {
         batch.begin();
         bitmapFont.draw(batch, "GAME OVER", 270, 280);
-        bitmapFont.draw(batch, "Continuar?", 270, 240);
-        bitmapFont.draw(batch, "Si", 240, 200);
-        bitmapFont.draw(batch, "No", 280, 200);
         batch.end();
 
         //Botones para finalizar

@@ -8,8 +8,10 @@ import com.mygdx.game.Assets;
 public class World {
     Space space;
     Ship ship;
+    HUD hud;
     AlienArmy alienArmy;
-    public  boolean gameOver = false;
+    public boolean gameOver = false;
+    public boolean win = false;
 
     int WORLD_WIDTH, WORLD_HEIGHT;
 
@@ -21,6 +23,7 @@ public class World {
         space = new Space();
         ship = new Ship(WORLD_WIDTH/2);
         alienArmy = new AlienArmy(WORLD_WIDTH, WORLD_HEIGHT);
+        hud = new HUD(ship, alienArmy);
     }
 
     public void render(float delta, SpriteBatch batch, Assets assets){
@@ -30,6 +33,7 @@ public class World {
         batch.begin();
         space.render(batch);
         ship.render(batch);
+        hud.render(batch);
         alienArmy.render(batch);
         batch.end();
     }
@@ -45,8 +49,11 @@ public class World {
     }
 
     private void checkGameOver() {
-        if(ship.state == Ship.State.DEAD){
+        if(ship.state == Ship.State.DEAD ){
             gameOver = true;
+        }
+        if(alienArmy.levelArmy > 4) {
+            win = true;
         }
     }
 
@@ -84,6 +91,7 @@ public class World {
                         alien.kill();
                         shoot.remove();
                         assets.aliendieSound.play();
+                        ship.score = ship.score + 75;
                     }
                 }
             }
