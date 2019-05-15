@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Assets;
 import com.mygdx.game.Controls;
 
-public class Ship {
+public class    Ship {
 
     enum State {
         IDLE, LEFT, RIGHT, SHOOT, DYING, DEAD
@@ -20,7 +20,7 @@ public class Ship {
     float speed = 5;
     int lives = 4;
 
-    TextureRegion frame, heart, over;
+    TextureRegion frame, heart;
     Weapon weapon;
 
     Ship(int initialPosition){
@@ -30,7 +30,6 @@ public class Ship {
 
         weapon = new Weapon();
     }
-
 
     void setFrame(Assets assets){
 
@@ -54,7 +53,6 @@ public class Ship {
                 frame = assets.naveidle.getKeyFrame(stateTime, true);
                 break;
         }
-
         switch (lives){
             case 4:
                 heart = assets.heartcontainer.getKeyFrame(0, true);
@@ -87,7 +85,7 @@ public class Ship {
     public void update(float delta, Assets assets) {
         stateTime += delta;
 
-        System.out.println(state);
+//        System.out.println(state);
         switch (state){
             case IDLE:
             case RIGHT:
@@ -127,7 +125,6 @@ public class Ship {
         stateTime = 0;
     }
 
-
     void moveLeft(){
         position.x -= speed;
     }
@@ -136,7 +133,7 @@ public class Ship {
         position.x += speed;
     }
 
-    void shoot(){
+    void shoot()    {
         weapon.shoot(position.x +16);
     }
 

@@ -70,8 +70,8 @@ public class AlienArmy {
         }
 
 
-       removeDeadAliens();
-
+        removeDeadAliens();
+        removeShoots();
     }
 
 
@@ -82,7 +82,6 @@ public class AlienArmy {
             }
         }
     }
-
 
     void move() {
         if (moveTimer.check()){
@@ -148,8 +147,6 @@ public class AlienArmy {
         gameOver = true;
 
     }
-
-
         void removeDeadAliens () {
             Array<Alien> aliensToRemove = new Array<Alien>();
             for (Alien alien : aliens) {
